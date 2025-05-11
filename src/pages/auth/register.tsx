@@ -1,12 +1,14 @@
 import { useState } from 'react'
-import { loginUser } from '@/lib/api'
-import { useAuth } from '@/lib/AuthContext'
 import { useRouter } from 'next/router'
+import { loginUser, registerUser } from '@/lib/api'
+import { useAuth } from '@/lib/AuthContext'
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter()
   const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [passwordConfirm, setPasswordConfirm] = useState('')
   const [error, setError] = useState<string | null>(null)
 
   const { login } = useAuth()
@@ -15,23 +17,33 @@ export default function LoginPage() {
     e.preventDefault()
     setError(null)
 
+    if (password !== passwordConfirm) {
+      setError("Passwords don't match")
+      return
+    }
+
     try {
-      const data = await loginUser(username, password)
-      login(data.access) // store access token in context + localStorage
-      localStorage.setItem('refresh', data.refresh)
+      await registerUser(username, email, password)
+      const loginRes = await loginUser(username, password)
+
+      login(loginRes.access)
+      localStorage.setItem('refresh', loginRes.refresh)
       router.push('/')
 
-      // Optional: Redirect user after login
-      // router.push('/dashboard')
     } catch (err: any) {
-      console.error(err)
-      setError(err.response?.data?.detail || 'Login failed.')
+      setError(
+        err.response?.data?.username ||
+        err.response?.data?.email ||
+        err.response?.data?.password ||
+        err.response?.data?.detail ||
+        'Registration failed.'
+      )
     }
   }
 
   return (
     <div className="max-w-md mx-auto mt-16 p-6 bg-white rounded shadow">
-      <h1 className="text-2xl font-bold mb-4">Login</h1>
+      <h1 className="text-2xl font-bold mb-4">Register</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">Username</label>
@@ -39,6 +51,16 @@ export default function LoginPage() {
             type="text"
             value={username}
             onChange={e => setUsername(e.target.value)}
+            className="w-full border rounded px-3 py-2"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
             className="w-full border rounded px-3 py-2"
             required
           />
@@ -53,6 +75,16 @@ export default function LoginPage() {
             required
           />
         </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">Confirm Password</label>
+          <input
+            type="password"
+            value={passwordConfirm}
+            onChange={e => setPasswordConfirm(e.target.value)}
+            className="w-full border rounded px-3 py-2"
+            required
+          />
+        </div>
 
         {error && <p className="text-red-600">{error}</p>}
 
@@ -60,7 +92,7 @@ export default function LoginPage() {
           type="submit"
           className="w-full bg-primary text-white py-2 rounded hover:bg-blue-700"
         >
-          Log In
+          Register
         </button>
       </form>
     </div>
