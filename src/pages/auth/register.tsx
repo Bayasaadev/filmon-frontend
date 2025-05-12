@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import { loginUser, registerUser } from '@/lib/api'
+import { loginUser, registerUser } from '@/lib/api/auth'
 import { useAuth } from '@/lib/AuthContext'
 
 export default function RegisterPage() {

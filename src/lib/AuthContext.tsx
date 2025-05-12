@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { getCurrentUser } from './api'
+import { getCurrentUser } from './api/auth'
 
 interface AuthContextType {
   isAuthenticated: boolean

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { loginUser } from '@/lib/api'
+import { loginUser } from '@/lib/api/auth'
 import { useAuth } from '@/lib/AuthContext'
 import { useRouter } from 'next/router'
 

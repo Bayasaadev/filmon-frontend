@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useAuth } from '@/lib/AuthContext'
 import { useEffect, useState } from 'react'
-import { getUserProfile } from '@/lib/api'
+import { getUserProfile } from '@/lib/api/auth'
 
 export default function Navbar() {
   const router = useRouter()

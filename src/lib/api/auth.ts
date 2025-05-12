@@ -1,11 +1,4 @@
-import axios from 'axios'
-
-const API = axios.create({
-  baseURL: 'http://localhost:8000/api/', // adjust for prod later
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
+import API from './index'
 
 // Login request
 export async function loginUser(username: string, password: string) {
@@ -56,7 +49,3 @@ export async function updateUserProfile(accessToken: string, formData: FormData)
   })
   return response.data
 }
-
-export const BASE_API_URL = 'http://localhost:8000' // or your prod backend
-
-export default API
